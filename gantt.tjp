@@ -1,0 +1,175 @@
+project nil "TrailRider Project" "1.0" 2019-09-06 +280d {
+}
+shift s40 "Part time shift" {
+  workinghours wed, thu, fri off
+}
+resource all "Group Members" {
+  resource ricky "Ricky Asfour" {
+  }
+  resource jasper "Jasper Chan" {
+  }
+  resource jacky "Jacky Chang" {
+  }
+  resource nathan "Nathan Hendricks" {
+  }
+  resource shane "Shane Patterson" {
+  }
+  resource hamish "Hamish Woods" {
+  }
+}
+task trailrider "TrailRider Project" {
+  start 2019-09-06
+  end 2019-11-29
+  task research "Research" {
+    purge allocate
+    allocate all
+    start 2019-09-06
+    duration 14d
+  }
+  task gantt "Gantt Chart" {
+    purge allocate
+    allocate jasper
+    start 2019-09-10
+    duration 1d
+  }
+  task scope "Scope" {
+    purge allocate
+    allocate all
+    start 2019-09-09
+    duration 1d
+  }
+  task reqs "Requirements" {
+    depends !scope
+    purge allocate
+    allocate all
+    duration 1d
+  }
+  task conc_gen "Concept Generation" {
+    depends !reqs
+    purge allocate
+    allocate all
+    duration 5d
+  }
+  task winnow "Winnowing" {
+    depends !conc_gen
+    purge allocate
+    allocate all
+    duration 3d
+  }
+  task rank "Ranking" {
+    depends !winnow
+    purge allocate
+    allocate all
+    duration 3d
+  }
+  task score "Scoring" {
+    depends !rank
+    purge allocate
+    allocate all
+    duration 3d
+  }
+  task did "Design in Detail" {
+    depends !score
+    purge allocate
+    allocate all
+    duration 30d
+  }
+  task report "Final Report" {
+    purge allocate
+    allocate all
+    duration 30d
+    end 2019-11-16
+  }
+  task oral_pres "Oral Presentation" {
+    duration 14d
+    end 2019-11-18
+  }
+  task milestones "Milestones" {
+    task weekly "Weekly Reports" {
+      task rep1 "Report 1" {
+        milestone
+        start 2019-09-11
+      }
+      task rep2 "Report 2" {
+        milestone
+        start 2019-09-18
+      }
+      task rep3 "Report 3" {
+        milestone
+        start 2019-09-25
+      }
+      task rep4 "Report 4" {
+        milestone
+        start 2019-10-02
+      }
+      task rep5 "Report 5" {
+        milestone
+        start 2019-10-09
+      }
+      task rep6 "Report 6" {
+        milestone
+        start 2019-10-16
+      }
+      task rep7 "Report 7" {
+        milestone
+        start 2019-10-23
+      }
+      task rep8 "Report 8" {
+        milestone
+        start 2019-10-30
+      }
+      task rep9 "Report 9" {
+        milestone
+        start 2019-11-06
+      }
+      task rep10 "Report 10" {
+        milestone
+        start 2019-11-13
+      }
+    }
+    task csr "Concept Selection Review" {
+      milestone
+      start 2019-10-09
+    }
+    task final_report_due "Final Report" {
+      milestone
+      start 2019-11-16
+    }
+    task oral_pres_due "Oral Presentation" {
+      milestone
+      start 2019-11-18
+    }
+  }
+}
+textreport report "Plan" {
+  formats html
+  header '== TrailRider Project =='
+
+  center -8<-
+    [#Plan Plan] | [#Resource_Allocation Resource Allocation]
+    ----
+    === Plan ===
+    <[report id="plan"]>
+    ----
+    === Resource Allocation ===
+    <[report id="resourceGraph"]>
+  ->8-
+}
+
+# A traditional Gantt chart with a project overview.
+taskreport plan "" {
+  headline "Project Plan"
+  columns bsi, name, start, end, effort, chart
+  loadunit shortauto
+  hideresource 1
+}
+
+# A graph showing resource allocation. It identifies whether each
+# resource is under- or over-allocated for.
+resourcereport resourceGraph "" {
+  headline "Resource Allocation Graph"
+  columns no, name, effort, weekly
+  loadunit shortauto
+  hidetask ~(isleaf() & isleaf_())
+  sorttasks plan.start.up
+}
