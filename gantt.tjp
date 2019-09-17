@@ -32,44 +32,82 @@ task trailrider "TrailRider Project" {
     start 2019-09-10
     duration 1d
   }
-  task scope "Scope" {
-    purge allocate
-    allocate all
-    start 2019-09-09
-    duration 1d
+  task project "Project Targets/Metrics" {
+    task reqs "Stakeholders/Requirements matrix" {
+      purge allocate
+      allocate all
+      start 2019-09-11
+      duration 7d
+    }
+    task rankreqs "Rank Requirements" {
+      depends !reqs
+      purge allocate
+      allocate all
+      duration 1d
+    }
+    task scope "Scope" {
+      purge allocate
+      allocate hamish
+      start 2019-09-16
+      duration 1d
+    }
+    task valueprop "Value Proposition" {
+      purge allocate
+      allocate hamish
+      start 2019-09-16
+      duration 1d
+    }
   }
-  task reqs "Requirements" {
-    depends !scope
-    purge allocate
-    allocate all
-    duration 1d
+  task function "Function Decomposition" {
+    task topfuncdecomp "Top Level Function Decomposition" {
+      purge allocate
+      allocate all
+      start 2019-09-18
+      duration 1d
+    }
+    task funcdecomp "Function Tree Diagram" {
+      depends !topfuncdecomp
+      purge allocate
+      allocate all
+      duration 4d
+    }
   }
-  task conc_gen "Concept Generation" {
-    depends !reqs
-    purge allocate
-    allocate all
-    duration 5d
+  task concept "Concept Generation" {
+    task concgenfrag "Concept Fragment Generation" {
+      depends !!function.funcdecomp
+      purge allocate
+      allocate all
+      duration 5d
+    }
+    task concgen "Full Concept Generation" {
+      depends !concgenfrag
+      purge allocate
+      allocate all
+      duration 5d
+    }
   }
-  task winnow "Winnowing" {
-    depends !conc_gen
-    purge allocate
-    allocate all
-    duration 3d
-  }
-  task rank "Ranking" {
-    depends !winnow
-    purge allocate
-    allocate all
-    duration 3d
-  }
-  task score "Scoring" {
-    depends !rank
-    purge allocate
-    allocate all
-    duration 3d
+  task concept_selection "Concept Selection" {
+    task winnow "Winnowing" {
+      depends !!concept.concgen
+      purge allocate
+      allocate all
+      duration 3d
+    }
+    task rank "Ranking" {
+      depends !winnow
+      purge allocate
+      allocate all
+      duration 3d
+    }
+    task score "Scoring" {
+      depends !rank
+      purge allocate
+      allocate all
+      duration 3d
+    }
   }
   task did "Design in Detail" {
-    depends !score
+    depends !concept_selection.score
     purge allocate
     allocate all
     duration 30d
@@ -159,7 +197,7 @@ textreport report "Plan" {
 # A traditional Gantt chart with a project overview.
 taskreport plan "" {
   headline "Project Plan"
-  columns bsi, name, start, end, effort, chart
+  columns bsi, name, start, end, effort, chart { scale day width 1000 }
   loadunit shortauto
   hideresource 1
 }
