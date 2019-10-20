@@ -4,17 +4,23 @@ shift s40 "Part time shift" {
   workinghours wed, thu, fri off
 }
 resource all "Group Members" {
-  resource ricky "Ricky Asfour" {
+  resource harness_team "Harness Design" {
+    resource jasper "Jasper Chan" {
+    }
+    resource jacky "Jacky Chang" {
+    }
   }
-  resource jasper "Jasper Chan" {
+  resource pedal_team "Pedal Design" {
+    resource ricky "Ricky Asfour" {
+    }
+    resource shane "Shane Patterson" {
+    }
   }
-  resource jacky "Jacky Chang" {
-  }
-  resource nathan "Nathan Hendricks" {
-  }
-  resource shane "Shane Patterson" {
-  }
-  resource hamish "Hamish Woods" {
+  resource wheel_team "Wheel Design" {
+    resource nathan "Nathan Hendricks" {
+    }
+    resource hamish "Hamish Woods" {
+    }
   }
 }
 task trailrider "TrailRider Project" {
@@ -107,10 +113,107 @@ task trailrider "TrailRider Project" {
     }
   }
   task did "Design in Detail" {
-    depends !concept_selection.score
-    purge allocate
-    allocate all
-    duration 30d
+    start 2019-10-16
+    task base_cad "Trailrider CAD" {
+      purge allocate
+      allocate jasper
+      start 2019-10-16
+      end 2019-10-25
+    }
+    task harness "Harness" {
+      task harness_research "Research" {
+        purge allocate
+        allocate jacky
+        start 2019-10-16
+        end 2019-10-23
+      }
+      task harness_requirements "Requirements" {
+        depends !harness_research
+        purge allocate
+        allocate harness_team
+        end 2019-10-25
+      }
+      task harness_stress "Stress Calculations" {
+        depends !harness_requirements
+        purge allocate
+        allocate harness_team
+        end 2019-10-27
+      }
+      task harness_cad "CAD/Integration" {
+        depends !harness_stress
+        purge allocate
+        allocate harness_team
+        end 2019-11-03
+      }
+    }
+    task pedals "Pedals" {
+      task pedal_research "Research" {
+        purge allocate
+        allocate pedal_team
+        start 2019-10-16
+        end 2019-10-25
+      }
+      task pedal_calcs "Calculations/Speccing Parts" {
+        depends !pedal_research
+        purge allocate
+        allocate pedal_team
+        end 2019-10-30
+      }
+      task pedal_final "Finalize Design Specifications/Cost" {
+        purge allocate
+        allocate pedal_team
+        milestone
+        start 2019-11-02
+      }
+      task pedal_cad "CAD/FEA/Integration" {
+        depends !pedal_calcs
+        purge allocate
+        allocate pedal_team
+        end 2019-11-03
+      }
+    }
+    task wheels "Wheels" {
+      task wheel_research "Preliminary Research" {
+        task wheel_forces "Baseline Forces" {
+          purge allocate
+          allocate hamish
+          start 2019-10-16
+          end 2019-10-23
+        }
+        task research "Research" {
+          purge allocate
+          allocate wheel_team
+          start 2019-10-16
+          end 2019-10-23
+        }
+        task sketches "Sketches" {
+          purge allocate
+          allocate wheel_team
+          start 2019-10-20
+          end 2019-10-23
+        }
+      }
+      task wheel_prelim_model "Preliminary Model" {
+        depends !wheel_research
+        purge allocate
+        allocate wheel_team
+        end 2019-10-30
+      }
+      task wheel_cad "Final CAD/Specification" {
+        depends !wheel_prelim_model
+        purge allocate
+        allocate wheel_team
+        end 2019-11-06
+      }
+    }
+    task handbrake "Handbrake" {
+      task spec_handbrake "Spec Handbrake" {
+        purge allocate
+        allocate wheel_team
+        start 2019-10-30
+        end 2019-11-06
+      }
+    }
   }
   task report "Final Report" {
     purge allocate
